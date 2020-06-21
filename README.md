@@ -12,5 +12,6 @@ antonyms - enter a word (returns antonyms of words)
 ```
 ### DEMO
 
-![WhatsApp Video 2020-06-21 at 18 20 34 (1)](https://user-images.githubusercontent.com/16894718/85225890-dc231b80-b3f1-11ea-9933-e8115bc0e09c.gif)
+![WhatsApp-Video-2020-06-21-at-230](https://user-images.githubusercontent.com/16894718/85231441-96c41580-b414-11ea-909b-21bcbc98018b.gif)
+
 
