@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import requests
 import os
 import json
-from twilio.twiml.messaging_response import MessagingResponse, Message
+from twilio.twiml.messaging_response import MessagingResponse
 load_dotenv()
 
 app = Flask(__name__)
@@ -11,15 +11,18 @@ app = Flask(__name__)
 
 @app.route('/vocabulary', methods=['POST'])
 def vocabulary():
+    word_def = ""
+    word_usage = ""
+    word_synonym = ""
+    word_antonym = ""
     incoming_msg = request.values.get('Body', '').lower()
     resp = MessagingResponse()
-    message = Message()
+    message = resp.message()
     responded = False
     words = incoming_msg.split('-')
     if len(words) == 1 and incoming_msg == "help":
         help_string = create_help_message()
         message.body(help_string)
-        resp.append(message)
         responded = True
     elif len(words) == 2:
         search_type = words[0].lstrip().rstrip()
@@ -27,26 +30,26 @@ def vocabulary():
         if search_type == "meaning":
             word_definitions = find_word_meaning(input_string)
             for word_definition in word_definitions:
-                resp.message(word_definition)
-            print(resp)
+                word_def += word_definition + " \n"
+            message.body(word_def)
             responded = True
         elif search_type == "examples":
             word_examples = find_word_usage(input_string)
             for word_example in word_examples:
-                resp.message(word_example)
-            print(resp)
+                word_usage += word_example + " \n"
+            message.body(word_usage)
             responded = True
         elif search_type == "synonyms":
             synonyms = find_synonyms(input_string)
             for word_synonyms in synonyms:
-                resp.message(word_synonyms)
-            print(resp)
+                word_synonym += word_synonyms + " \n"
+            message.body(word_synonym)
             responded = True
         elif search_type == "antonyms":
-            word_antonyms = find_antonyms(input_string)
-            for word_antonyms in word_antonyms:
-                resp.message(word_antonyms)
-            print(resp)
+            antonyms = find_antonyms(input_string)
+            for word_antonyms in antonyms:
+                word_antonym += word_antonyms + " \n"
+            message.body(word_antonym)
             responded = True
     if not responded:
         message.body('Incorrect request format. Please enter help to see the correct format')
@@ -60,12 +63,12 @@ def create_help_message():
     Returns help message for using VocabBot
     :return: string
     """
-    help_message = "Improve your vocabulary using VocabBot! \n\n" \
+    help_message = "Improve your vocabulary using *VocabBot*! \n\n" \
         "You can ask the bot the below listed things:  \n"\
-        "meaning - enter the word \n"\
-        "examples - enter the word \n"\
-        "synonyms - enter the word \n"\
-        "antonyms - enter the word \n"
+        "*meaning* - enter the word \n"\
+        "*examples* - enter the word \n"\
+        "*synonyms* - enter the word \n"\
+        "*antonyms* - enter the word \n"
     return help_message
 
 
@@ -115,7 +118,6 @@ def find_synonyms(word):
     :return:
     """
     word_synonyms = []
-    counter = 0
     url = f"https://wordsapiv1.p.rapidapi.com/words/{word}/synonyms"
     headers = os.getenv("WORDS_API_KEYS")
     headers = json.loads(headers)
@@ -123,7 +125,6 @@ def find_synonyms(word):
     content = json.loads(response.text)
     if response.status_code == 200:
         for synonym in content["synonyms"]:
-            counter += 1
             word_synonyms.append("- " + synonym + ".")
     else:
         word_synonyms.append(content["synonyms"])
