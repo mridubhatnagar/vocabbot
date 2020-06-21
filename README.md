@@ -10,4 +10,5 @@ examples - enter a word (returns usage of words)
 synonyms - enter a word (returns synonyms of words)
 antonyms - enter a word (returns antonyms of words)
 ```
-![ezgif com-video-to-gif](https://user-images.githubusercontent.com/16894718/85225642-72eed880-b3f0-11ea-8b2b-3876e3305fa9.gif)
+![WhatsApp Video 2020-06-21 at 18 20 34 (1)](https://user-images.githubusercontent.com/16894718/85225890-dc231b80-b3f1-11ea-9933-e8115bc0e09c.gif)
+
