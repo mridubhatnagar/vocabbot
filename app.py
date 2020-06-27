@@ -41,7 +41,7 @@ def vocabulary():
             if search_type == "synonyms":
                 for synonym in response["synonyms"]:
                     word_synonym += synonym + "\n"
-                    message.body(word_synonym)
+                message.body(word_synonym)
                 responded = True
             if search_type == "antonyms":
                 for antonym in response["antonyms"]:
@@ -106,7 +106,7 @@ def get_dictionary_response(word):
                     word_metadata["synonyms"] = synonyms
                 except KeyError as e:
                     print(e)
-                break
+            break
     return word_metadata
 
 
