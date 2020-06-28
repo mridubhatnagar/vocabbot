@@ -79,6 +79,8 @@ def get_dictionary_response(word):
     word_metadata = {}
     definition = "sorry, no definition available"
     example = "sorry, no examples available"
+    synonyms = []
+    antonyms = []
     api_key = os.getenv("KEY_THESAURUS")
     url = f"https://www.dictionaryapi.com/api/v3/references/thesaurus/json/{word}?key={api_key}"
     response = requests.get(url)
@@ -100,13 +102,13 @@ def get_dictionary_response(word):
                             definition = results[1]
                         if results[0] == "vis":
                             example = results[1][0]["t"]
-                    word_metadata["meaning"] = definition
-                    word_metadata["examples"] = example
-                    word_metadata["antonyms"] = antonyms
-                    word_metadata["synonyms"] = synonyms
                 except KeyError as e:
                     print(e)
             break
+    word_metadata["meaning"] = definition
+    word_metadata["examples"] = example
+    word_metadata["antonyms"] = antonyms
+    word_metadata["synonyms"] = synonyms
     return word_metadata
 
 
