@@ -63,10 +63,10 @@ def create_help_message():
     """
     help_message = "Improve your vocabulary using *VocabBot*! \n\n" \
         "You can ask the bot the below listed things:  \n"\
-        "*meaning* - enter the word \n"\
-        "*examples* - enter the word \n"\
-        "*synonyms* - enter the word \n"\
-        "*antonyms* - enter the word \n"
+        "*meaning* - type the word \n"\
+        "*examples* - type the word \n"\
+        "*synonyms* - type the word \n"\
+        "*antonyms* - type the word \n"
     return help_message
 
 
@@ -77,33 +77,33 @@ def get_dictionary_response(word):
     :return: definitions, examples, antonyms, synonyms
     """
     word_metadata = {}
-    definition = "sorry, no definition available"
-    example = "sorry, no examples available"
-    synonyms = []
-    antonyms = []
+    definition = "sorry, no definition is available."
+    example = "sorry, no examples are available."
+    synonyms = ["sorry, no synonyms are available."]
+    antonyms = ["sorry, no antonyms are available."]
     api_key = os.getenv("KEY_THESAURUS")
     url = f"https://www.dictionaryapi.com/api/v3/references/thesaurus/json/{word}?key={api_key}"
     response = requests.get(url)
     api_response = json.loads(response.text)
     if response.status_code == 200:
         for data in api_response:
-            if data["meta"]["id"] == word:
-                try:
-                    if len(data["meta"]["syns"]) == 0:
-                        synonyms = []
-                    else:
-                        synonyms = data["meta"]["syns"][0]
-                    if len(data["meta"]["ants"]) == 0:
-                        antonyms = []
-                    else:
-                        antonyms = data["meta"]["ants"][0]
-                    for results in data["def"][0]["sseq"][0][0][1]["dt"]:
-                        if results[0] == "text":
-                            definition = results[1]
-                        if results[0] == "vis":
-                            example = results[1][0]["t"]
-                except KeyError as e:
-                    print(e)
+            try:
+                if data["meta"]["id"] == word:
+                    try:
+                        if len(data["meta"]["syns"]) != 0:
+                            synonyms = data["meta"]["syns"][0]
+                        if len(data["meta"]["ants"]) != 0:
+                            antonyms = data["meta"]["ants"][0]
+                        for results in data["def"][0]["sseq"][0][0][1]["dt"]:
+                            if results[0] == "text":
+                                definition = results[1]
+                            if results[0] == "vis":
+                                example = results[1][0]["t"].replace("{it}", "*").\
+                                    replace("{/it}", "*")
+                    except KeyError as e:
+                        print(e)
+            except TypeError as e:
+                print(e)
             break
     word_metadata["meaning"] = definition
     word_metadata["examples"] = example
